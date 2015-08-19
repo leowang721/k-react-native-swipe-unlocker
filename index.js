@@ -63,11 +63,11 @@ class SwipeUnlocker extends Component {
 
     onUnlocked() {
         var me = this;
-        Animated.decay(  // 支持: spring, decay, timing，过渡的动画方式
+        Animated.timing(  // 支持: spring, decay, timing，过渡的动画方式
             me.state.moved,
             {
                 toValue: screenWidth,  // 目标值
-                velocity: 3 // 动画方式的参数
+                duration: 150
             }
         ).start(() => {
             me.props.onUnlocked && me.props.onUnlocked();
