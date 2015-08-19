@@ -1,0 +1,18 @@
+{
+  "name": "k-react-native-swipe-unlocker",
+  "version": "0.0.1-alpha.1",
+  "license": "MIT",
+  "author": {
+    "name": "Leo Wang",
+    "email": "leowang721@gmail.com",
+    "url": "http://leowang721.github.io"
+  },
+  "contributors": [],
+  "dependencies": {
+    "k-core": "^0.0.1-alpha.2"
+  },
+  "main": "index",
+  "description": "A simple swipe unlock for React Native",
+    "homepage": "https://github.com/leowang721/k-react-native-swipe-unlocker",
+    "repository": "git://github.com/leowang721/k-react-native-swipe-unlocker"
+}
