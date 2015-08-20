@@ -9,10 +9,9 @@ var {
     Animated,
     Component,
     View,
+    Text,
     StyleSheet
 } = React;
-
-var { Icon } = require('react-native-icons');
 
 var styles = require('./styles');
 
@@ -26,29 +25,13 @@ class GridItem extends Component {
             bounceValue: new Animated.Value(1)
         };
     }
-    animate() {
-        this.state.bounceValue.setValue(1);  // 初始值
-        Animated.spring(  // 支持: spring, decay, timing，过渡的动画方式
-            this.state.bounceValue,
-            {
-                toValue: 1.1,  // 目标值
-                friction: 2 // 动画方式的参数
-            }
-        ).start();  // 开始
-    }
-
-    getIconName() {
-        switch (this.state.viewState) {
-            case 'crossed':
-                return 'fontawesome|arrow-circle-up';
-            default:
-                return 'fontawesome|circle';
-
-        }
-    }
 
     getRotateDegree() {
         return this.state.rotateDegree + 'deg';
+    }
+
+    getPointerStyles() {
+        return styles.gridItemPointerRight;
     }
 
     render() {
@@ -58,19 +41,7 @@ class GridItem extends Component {
                     styles.gridItem,
                     styles[this.state.viewState + 'GridItem']
                 ]}>
-                <Icon
-                    name={this.getIconName()}
-                    size={30}
-                    color='#60AAFC'
-                    style={[
-                        styles.icon,
-                        {
-                            transform: [
-                                {rotate: this.getRotateDegree()}
-                            ]
-                        }
-                    ]}
-                />
+                <View style={styles.gridItemInner}></View>
             </Animated.View>
         )
     }

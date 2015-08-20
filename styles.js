@@ -66,19 +66,20 @@ var styles = StyleSheet.create({
         borderColor: '#82CCFE',
         backgroundColor: '#5F5E6A'
     },
-    line: {
-        backgroundColor: 'green',
-        height: 300,
-        width: 10,
-        position: 'absolute',
-        top: 30,
-        left: 30
-    },
-    icon: {
+    gridItemInner: {
         width: 20,
         height: 20,
         borderRadius: 10,
-        margin: 14
+        borderColor: '#82CCFE',
+        borderWidth: 1,
+        margin: 14,
+        backgroundColor: '#60AAFC'
+    },
+    line: {
+        backgroundColor: '#60AAFC',
+        width: 10,
+        position: 'absolute',
+        opacity: 0.5
     }
 });
 

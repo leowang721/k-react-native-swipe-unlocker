@@ -6,6 +6,8 @@
 var React = require('react-native');
 
 var {
+    Animated,
+    LayoutAnimation,
     Component,
     View,
     PanResponder,
@@ -13,12 +15,21 @@ var {
 } = React;
 
 var GridItem = require('./GridItem');
+var Lines = require('./Lines');
 
 var styles = require('./styles');
 
 let ITEM_AMOUNT = 9;
 
 class GridView extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            lines: []
+        };
+    }
+
     componentWillMount() {
         var me = this;
         me._panResponder = PanResponder.create({
@@ -59,6 +70,9 @@ class GridView extends Component {
             });
             this.refs['item' + i].state.bounceValue.setValue(1)
         }
+        this.setState({
+            lines: []
+        });
     }
 
     onMoving(evt, gestureState) {
@@ -92,12 +106,21 @@ class GridView extends Component {
 
                 if (me.lastItem) {
                     // 计算角度
-                    var rotateDegree = me.getDegree(me.items[me.lastItem].center, me.items[target].center);
+                    // var rotateDegree = me.getDegree(me.items[me.lastItem].center, me.items[target].center);
                     me.refs['item' + me.lastItem].setState({
-                        viewState: 'crossed',
-                        rotateDegree: rotateDegree
+                        viewState: 'crossed'
+                        // rotateDegree: rotateDegree
                     });
                     // draw line
+                    var lines = me.state.lines;
+                    lines.push({
+                        from: me.items[me.lastItem].center,
+                        to: me.items[target].center
+                    });
+
+                    me.setState({
+                        lines: lines
+                    });
                 }
 
                 me.lastItem = target;
@@ -105,28 +128,45 @@ class GridView extends Component {
         }))(gestureState.x0 + gestureState.dx, gestureState.y0 + gestureState.dy));
     }
 
-    getDegree(circlePoint, point){
-        var rx = point.x - circlePoint.x;
-        var ry = point.y - circlePoint.y;
+    getDegree(from, to){
+        var rx = to.x - from.x;
+        var ry = to.y - from.y;
         var radius = Math.sqrt(rx * rx + ry * ry);
 
         var otherPoint = {
-          x: circlePoint.x,
-          y: circlePoint.y - radius
+          x: from.x,
+          y: from.y - radius
         }
 
-        var dx = otherPoint.x - point.x;
-        var dy = otherPoint.y - point.y;
+        var dx = otherPoint.x - to.x;
+        var dy = otherPoint.y - to.y;
         var d = Math.sqrt(dx * dx + dy * dy) / 2;
 
         return Math.round(2 * Math.asin(d/radius) * (dx > 0 ? -1 : 1) / Math.PI * 180);
     }
 
     calculatePosition() {
+        var me = this;
         if (!this.calculating) {
             var promises = [];
             var items = this.items = {};
             var RCTUIManager = React.NativeModules.UIManager;
+
+            // 计算容器的位置
+            promises.push(new Promise(function (resolve, reject) {
+                RCTUIManager.measure(
+                    React.findNodeHandle(me.refs.itemContainer),
+                    (x, y, width, height, pageX, pageY) => {
+                        items.itemContainer = {
+                            x0: pageX,
+                            x1: pageX + width,
+                            y0: pageY,
+                            y1: pageY + height,
+                        }
+                        resolve();
+                    }
+                )
+            }));
 
             for(var i = 1; i <= ITEM_AMOUNT; i++) {
                 var currentItem = this.refs['item' + i];
@@ -154,9 +194,53 @@ class GridView extends Component {
         }
     }
 
+
+    getLines() {
+        var me = this;
+        var lines = this.state.lines;
+        var method = me.getLine.bind(me);
+        return lines.map((eachLine, index) => {
+            return method(eachLine, index);
+        });
+    }
+
+    getLine(lineData, index) {
+        var rx = lineData.to.x - lineData.from.x;
+        var ry = lineData.to.y - lineData.from.y;
+        var length = Math.sqrt(rx * rx + ry * ry);
+        var degree = this.getDegree(lineData.from, lineData.to);
+        var containerPos = this.items.itemContainer;
+
+        var targetCenter = {
+            x: lineData.from.x + rx / 2,
+            y: lineData.from.y + ry / 2
+        };
+        var currentCenter = {
+            x: lineData.from.x,
+            y: lineData.from.y + length / 2
+        };
+
+        var dx = targetCenter.x - currentCenter.x;
+        var dy = targetCenter.y - currentCenter.y;
+
+        return (
+            <Animated.View key={'grid-view-line-' + index} style={[
+                styles.line,
+                {
+                    left: lineData.from.x - containerPos.x0 + dx - 5,
+                    top: lineData.from.y - containerPos.y0 + dy,
+                    height: length,
+                    transform: [
+                        {rotate: degree + 'deg'}
+                    ]
+                }
+            ]} />
+        );
+    }
+
     render() {
         return (
-            <View style={styles.gridView} {...this._panResponder.panHandlers}>
+            <View ref="itemContainer" style={styles.gridView} {...this._panResponder.panHandlers}>
                 <View style={styles.gridLine}>
                     <GridItem ref="item1" />
                     <GridItem ref="item2" />
@@ -172,6 +256,7 @@ class GridView extends Component {
                     <GridItem ref="item8" />
                     <GridItem ref="item9" />
                 </View>
+                {this.getLines()}
             </View>
         );
     }
