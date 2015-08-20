@@ -17,8 +17,8 @@ var {
     errorHandler
 } = kCore;
 
-var Dimensions = require('Dimensions');
-var screenWidth = Dimensions.get('window').width;
+var Dimensions = React.NativeModules.UIManager.Dimensions;
+var screenWidth = Dimensions.window.width;
 
 var styles = require('./styles');
 var GridView = require('./GridView');

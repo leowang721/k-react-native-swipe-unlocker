@@ -8,8 +8,8 @@ var {
      StyleSheet
 } = React;
 
-var Dimensions = require('Dimensions');
-var screenWidth = Dimensions.get('window').width;
+var Dimensions = React.NativeModules.UIManager.Dimensions;
+var screenWidth = Dimensions.window.width;
 var colWidth = screenWidth / 3;
 
 var styles = StyleSheet.create({

@@ -12,8 +12,6 @@ var {
     StyleSheet
 } = React;
 
-var Promise = require('Promise');
-
 var GridItem = require('./GridItem');
 
 var styles = require('./styles');
@@ -128,7 +126,7 @@ class GridView extends Component {
         if (!this.calculating) {
             var promises = [];
             var items = this.items = {};
-            var RCTUIManager = require('NativeModules').UIManager;
+            var RCTUIManager = React.NativeModules.UIManager;
 
             for(var i = 1; i <= ITEM_AMOUNT; i++) {
                 var currentItem = this.refs['item' + i];
