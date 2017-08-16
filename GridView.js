@@ -3,16 +3,16 @@
  * @author Leo Wang(wangkemiao@baidu.com)
  */
 
-var React = require('react-native');
+import React, {Component} from 'react'
 
-var {
+import ReactNative, {
     Animated,
     LayoutAnimation,
-    Component,
     View,
     PanResponder,
-    StyleSheet
-} = React;
+    StyleSheet,
+    NativeModules
+} from 'react-native';
 
 var GridItem = require('./GridItem');
 var Lines = require('./Lines');
@@ -150,12 +150,12 @@ class GridView extends Component {
         if (!this.calculating) {
             var promises = [];
             var items = this.items = {};
-            var RCTUIManager = React.NativeModules.UIManager;
+            var RCTUIManager = NativeModules.UIManager;
 
             // 计算容器的位置
             promises.push(new Promise(function (resolve, reject) {
                 RCTUIManager.measure(
-                    React.findNodeHandle(me.refs.itemContainer),
+                    ReactNative.findNodeHandle(me.refs.itemContainer),
                     (x, y, width, height, pageX, pageY) => {
                         items.itemContainer = {
                             x0: pageX,
@@ -170,7 +170,7 @@ class GridView extends Component {
 
             for(var i = 1; i <= ITEM_AMOUNT; i++) {
                 var currentItem = this.refs['item' + i];
-                var handle = React.findNodeHandle(currentItem);
+                var handle = ReactNative.findNodeHandle(currentItem);
 
                 promises.push(new Promise(function (resolve, reject) {
                     RCTUIManager.measure(handle, ((i) => ((x, y, width, height, pageX, pageY) => {

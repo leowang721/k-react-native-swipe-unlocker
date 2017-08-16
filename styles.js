@@ -5,11 +5,11 @@
 
 var React = require('react-native');
 var {
-     StyleSheet
+     StyleSheet,
+     Dimensions
 } = React;
 
-var Dimensions = React.NativeModules.UIManager.Dimensions;
-var screenWidth = Dimensions.window.width;
+var screenWidth = Dimensions.get('window').width;
 var colWidth = screenWidth / 3;
 
 var styles = StyleSheet.create({

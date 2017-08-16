@@ -3,14 +3,13 @@
  * @author Leo Wang(wangkemiao@baidu.com)
  */
 
-var React = require('react-native');
+import React, {Component} from 'react'
 
-var {
+import {
     Animated,
-    Component,
     View,
     StyleSheet
-} = React;
+} from 'react-native';
 
 var styles = require('./styles');
 

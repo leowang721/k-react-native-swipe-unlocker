@@ -2,14 +2,14 @@
  * 手势解锁组件
  * @author Leo Wang(leowang721@gmail.com)
  */
-var React = require('react-native');
-var {
+import React, {Component} from 'react'
+import {
     Animated,
     AsyncStorage,
-    Component,
     View,
-    Text
-} = React;
+    Text,
+    Dimensions
+} from 'react-native';
 
 var kCore = require('k-core');
 var {
@@ -17,8 +17,7 @@ var {
     errorHandler
 } = kCore;
 
-var Dimensions = React.NativeModules.UIManager.Dimensions;
-var screenWidth = Dimensions.window.width;
+var screenWidth = Dimensions.get('window').width;
 
 var styles = require('./styles');
 var GridView = require('./GridView');
